@@ -109,36 +109,12 @@
       transform: translateY(-2px);
     }
 
-    .payment-section {
-      margin-top: 20px;
-      text-align: center;
-    }
-
     .privacy-note {
       font-size: 12px;
       color: #888888;
       margin-top: 20px;
       text-align: center;
       line-height: 1.5;
-    }
-
-    .trust-badges {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
-      font-size: 13px;
-      color: #aaaaaa;
-    }
-
-    .trust-badges div {
-      display: flex;
-      align-items: center;
-    }
-
-    .trust-badges div::before {
-      content: "✔️";
-      margin-right: 8px;
-      color: #3498db;
     }
 
     footer {
@@ -176,12 +152,6 @@
     <h1>Book Your Private Consultation</h1>
     <p class="subtitle">100% Confidential | Certified Sexologists</p>
 
-    <div class="trust-badges">
-      <div>Anonymous Option</div>
-      <div>MCI Certified</div>
-      <div>Secure & Private</div>
-    </div>
-
     <form id="consultation-form">
 
       <label for="consultation">Consultation Type</label>
@@ -202,20 +172,38 @@
         <option value="55+">55+</option>
       </select>
 
+      <!-- New Preferred Language field -->
+      <label for="language">Preferred Language of Consultation</label>
+      <select id="language" name="Preferred Language" required>
+        <option value="">-- Select Language --</option>
+        <option value="English">English</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Marathi">Marathi</option>
+        <option value="Tamil">Tamil</option>
+        <option value="Telugu">Telugu</option>
+        <option value="Kannada">Kannada</option>
+        <option value="Gujarati">Gujarati</option>
+        <option value="Punjabi">Punjabi</option>
+        <option value="Bengali">Bengali</option>
+        <option value="Malayalam">Malayalam</option>
+        <option value="Other">Other</option>
+      </select>
+
       <label for="duration">Select Duration & Fee</label>
       <select id="duration" name="Time Slot Duration" required onchange="updateTimeSlots()">
         <option value="">-- Select Time Slot --</option>
+        <option value="15 Minutes - ₹300">15 Minutes - ₹300</option>
         <option value="30 Minutes - ₹500">30 Minutes - ₹500</option>
-        <option value="1 Hour - ₹800">1 Hour - ₹800</option>
+        <option value="1 Hour - ₹1000">1 Hour - ₹1000</option>
       </select>
+
+      <label for="date">Preferred Date</label>
+      <input type="date" id="date" name="Preferred Date" required onchange="updateTimeSlots()">
 
       <label for="timeslot">Preferred Time Slot</label>
       <select id="timeslot" name="Preferred Time Slot" required>
         <option value="">-- Select Duration First --</option>
       </select>
-
-      <label for="date">Preferred Date</label>
-      <input type="date" id="date" name="Preferred Date" required>
 
       <label for="name">Your Name (Alias Allowed)</label>
       <input type="text" id="name" name="Name" placeholder="Enter your name" required>
@@ -236,11 +224,6 @@
 
     <div id="form-message"></div>
 
-    <div class="payment-section">
-      <p><strong>Complete Payment After Submission:</strong></p>
-      <a href="https://rzp.io/l/yourpaymentlink" class="btn" target="_blank">Pay Now ₹</a>
-    </div>
-
     <p class="privacy-note">
       🔒 Your privacy is our priority.<br>
       All data is encrypted & consultations are fully confidential.
@@ -252,7 +235,7 @@
   </footer>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwOwGzGkjxHdBRC6AmH4v5jE4iWHZlRna7uncR3_n8vSaLD0JMm3d8NwWW04_zIPSrgww/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwY8gtng_gNttFCKvr6kxejuc_oMAqvJ3LYksuPFPtiOYRrMKI-XAMAY7lGA2IfnpSW1Q/exec';
     const form = document.getElementById('consultation-form');
     const formMessage = document.getElementById('form-message');
     const submitButton = form.querySelector('button[type="submit"]');
@@ -260,6 +243,12 @@
     const dateInput = document.getElementById('date');
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
+
+    const paymentLinks = {
+      "15 Minutes - ₹300": "https://razorpay.me/@otiscenter?amount=JRabBs%2BUijZmruPWP7O7uQ%3D%3D",
+      "30 Minutes - ₹500": "https://razorpay.me/@otiscenter?amount=bd6mwPoVV2sRePhB8DGUcw%3D%3D",
+      "1 Hour - ₹1000": "https://razorpay.me/@otiscenter?amount=LaORF0cOqXzXsYKdgu1fsg%3D%3D"
+    };
 
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -274,6 +263,9 @@
         params.append(pair[0], pair[1]);
       }
 
+      const selectedDuration = form.querySelector('#duration').value;
+      const redirectLink = paymentLinks[selectedDuration] || "#";
+
       fetch(scriptURL, {
         method: 'POST',
         body: params
@@ -282,9 +274,10 @@
         .then(response => {
           if (response.result === 'success') {
             formMessage.style.color = "#4CAF50";
-            formMessage.innerHTML = "✅ Your details have been submitted successfully!";
-            form.reset();
-            submitButton.innerText = 'Submitted!';
+            formMessage.innerHTML = "✅ Details submitted! Redirecting you to payment...";
+            setTimeout(() => {
+              window.location.href = redirectLink;
+            }, 2000);
           } else {
             formMessage.style.color = "#FF5252";
             formMessage.innerHTML = "❌ Submission failed. Please try again!";
@@ -304,16 +297,34 @@
     function updateTimeSlots() {
       const durationSelect = document.getElementById('duration');
       const timeslotSelect = document.getElementById('timeslot');
-      const selectedDuration = durationSelect.value;
+      const dateSelect = document.getElementById('date').value;
 
       timeslotSelect.innerHTML = '';
 
+      const selectedDuration = durationSelect.value;
+
+      if (!selectedDuration || !dateSelect) {
+        const option = document.createElement('option');
+        option.text = '-- Select Duration First --';
+        timeslotSelect.appendChild(option);
+        return;
+      }
+
+      const now = new Date();
+      const selectedDate = new Date(dateSelect);
       let slots = [];
 
-      if (selectedDuration.includes('30 Minutes')) {
-        slots = generateTimeSlots(30);
+      let currentHour = now.getHours();
+      let currentMinute = now.getMinutes();
+
+      let minTimeInMinutes = (selectedDate.toDateString() === now.toDateString()) ? (currentHour * 60 + currentMinute + 15) : (9 * 60);
+
+      if (selectedDuration.includes('15 Minutes')) {
+        slots = generateTimeSlots(15, minTimeInMinutes);
+      } else if (selectedDuration.includes('30 Minutes')) {
+        slots = generateTimeSlots(30, minTimeInMinutes);
       } else if (selectedDuration.includes('1 Hour')) {
-        slots = generateTimeSlots(60);
+        slots = generateTimeSlots(60, minTimeInMinutes);
       }
 
       if (slots.length > 0) {
@@ -325,12 +336,12 @@
         });
       } else {
         const option = document.createElement('option');
-        option.text = '-- Select Duration First --';
+        option.text = '-- No slots available --';
         timeslotSelect.appendChild(option);
       }
     }
 
-    function generateTimeSlots(intervalMinutes) {
+    function generateTimeSlots(intervalMinutes, minTimeInMinutes = 9 * 60) {
       const startHour = 9;
       const endHour = 20;
       let slots = [];
@@ -338,6 +349,13 @@
       for (let hour = startHour; hour < endHour; hour++) {
         let minutes = 0;
         while (minutes < 60) {
+          let totalMinutes = hour * 60 + minutes;
+
+          if (totalMinutes < minTimeInMinutes) {
+            minutes += intervalMinutes;
+            continue;
+          }
+
           let startTime = formatTime(hour, minutes);
           let endMinutes = minutes + intervalMinutes;
           let endHourAdjusted = hour;
