@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -26,6 +26,17 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
     }
 
+    .brand-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .brand-name {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
     h1 {
       text-align: center;
       color: #ffffff;
@@ -51,6 +62,7 @@
     input[type="text"],
     input[type="email"],
     input[type="tel"],
+    input[type="date"],
     textarea {
       width: 100%;
       padding: 12px 14px;
@@ -156,6 +168,11 @@
 <body>
 
   <div class="container">
+
+    <div class="brand-header">
+      <div class="brand-name">Otis Center</div>
+    </div>
+
     <h1>Book Your Private Consultation</h1>
     <p class="subtitle">100% Confidential | Certified Sexologists</p>
 
@@ -170,9 +187,8 @@
       <label for="consultation">Consultation Type</label>
       <select id="consultation" name="Consultation Type" required>
         <option value="">-- Select Consultation Type --</option>
-        <option value="Chat Consultation">Chat Consultation</option>
-        <option value="Audio Consultation">Audio Consultation</option>
-        <option value="Video Consultation">Video Consultation</option>
+        <option value="Audio Consultation">On Call Consultation</option>
+        <option value="Video Consultation">Video Call Consultation</option>
       </select>
 
       <label for="ageGroup">Select Your Age Group</label>
@@ -189,7 +205,6 @@
       <label for="duration">Select Duration & Fee</label>
       <select id="duration" name="Time Slot Duration" required onchange="updateTimeSlots()">
         <option value="">-- Select Time Slot --</option>
-        <option value="15 Minutes - ₹300">15 Minutes - ₹300</option>
         <option value="30 Minutes - ₹500">30 Minutes - ₹500</option>
         <option value="1 Hour - ₹800">1 Hour - ₹800</option>
       </select>
@@ -198,6 +213,9 @@
       <select id="timeslot" name="Preferred Time Slot" required>
         <option value="">-- Select Duration First --</option>
       </select>
+
+      <label for="date">Preferred Date</label>
+      <input type="date" id="date" name="Preferred Date" required>
 
       <label for="name">Your Name (Alias Allowed)</label>
       <input type="text" id="name" name="Name" placeholder="Enter your name" required>
@@ -239,10 +257,13 @@
     const formMessage = document.getElementById('form-message');
     const submitButton = form.querySelector('button[type="submit"]');
 
+    const dateInput = document.getElementById('date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
     form.addEventListener('submit', e => {
       e.preventDefault();
 
-      // Disable the submit button to prevent multiple clicks
       submitButton.disabled = true;
       submitButton.innerText = 'Submitting...';
 
@@ -263,14 +284,10 @@
             formMessage.style.color = "#4CAF50";
             formMessage.innerHTML = "✅ Your details have been submitted successfully!";
             form.reset();
-
-            // Update button to show submitted
             submitButton.innerText = 'Submitted!';
           } else {
             formMessage.style.color = "#FF5252";
             formMessage.innerHTML = "❌ Submission failed. Please try again!";
-
-            // Re-enable button on failure
             submitButton.disabled = false;
             submitButton.innerText = 'Submit & Proceed';
           }
@@ -279,8 +296,6 @@
           formMessage.style.color = "#FF5252";
           formMessage.innerHTML = "❌ There was an error! Please try again.";
           console.error('Error!', error.message);
-
-          // Re-enable button on error
           submitButton.disabled = false;
           submitButton.innerText = 'Submit & Proceed';
         });
@@ -295,9 +310,7 @@
 
       let slots = [];
 
-      if (selectedDuration.includes('15 Minutes')) {
-        slots = generateTimeSlots(15);
-      } else if (selectedDuration.includes('30 Minutes')) {
+      if (selectedDuration.includes('30 Minutes')) {
         slots = generateTimeSlots(30);
       } else if (selectedDuration.includes('1 Hour')) {
         slots = generateTimeSlots(60);
