@@ -1,0 +1,358 @@
+<!DOCTYPE html> 
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Consultation | Otis Center</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #121212;
+      margin: 0;
+      padding: 0;
+      color: #f1f1f1;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      margin: 50px auto;
+      background: #1e1e1e;
+      padding: 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aaaaaa;
+      font-size: 15px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #eeeeee;
+    }
+
+    select,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #333333;
+      margin-bottom: 18px;
+      font-size: 14px;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      box-sizing: border-box;
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: #3498db;
+      background-color: #333333;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #3498db;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #217dbb;
+      transform: translateY(-2px);
+    }
+
+    .payment-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .privacy-note {
+      font-size: 12px;
+      color: #888888;
+      margin-top: 20px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      font-size: 13px;
+      color: #aaaaaa;
+    }
+
+    .trust-badges div {
+      display: flex;
+      align-items: center;
+    }
+
+    .trust-badges div::before {
+      content: "✔️";
+      margin-right: 8px;
+      color: #3498db;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 30px;
+      color: #555555;
+    }
+
+    small {
+      display: block;
+      margin-top: -14px;
+      margin-bottom: 15px;
+      font-size: 12px;
+      color: #888888;
+    }
+
+    #form-message {
+      text-align: center;
+      margin-top: 15px;
+      color: #4CAF50;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Book Your Private Consultation</h1>
+    <p class="subtitle">100% Confidential | Certified Sexologists</p>
+
+    <div class="trust-badges">
+      <div>Anonymous Option</div>
+      <div>MCI Certified</div>
+      <div>Secure & Private</div>
+    </div>
+
+    <form id="consultation-form">
+
+      <label for="consultation">Consultation Type</label>
+      <select id="consultation" name="Consultation Type" required>
+        <option value="">-- Select Consultation Type --</option>
+        <option value="Chat Consultation">Chat Consultation</option>
+        <option value="Audio Consultation">Audio Consultation</option>
+        <option value="Video Consultation">Video Consultation</option>
+      </select>
+
+      <label for="ageGroup">Select Your Age Group</label>
+      <select id="ageGroup" name="Age Group" required>
+        <option value="">-- Select Age Group --</option>
+        <option value="Under 18">Under 18</option>
+        <option value="18-24">18 - 24</option>
+        <option value="25-34">25 - 34</option>
+        <option value="35-44">35 - 44</option>
+        <option value="45-54">45 - 54</option>
+        <option value="55+">55+</option>
+      </select>
+
+      <label for="duration">Select Duration & Fee</label>
+      <select id="duration" name="Time Slot Duration" required onchange="updateTimeSlots()">
+        <option value="">-- Select Time Slot --</option>
+        <option value="15 Minutes - ₹300">15 Minutes - ₹300</option>
+        <option value="30 Minutes - ₹500">30 Minutes - ₹500</option>
+        <option value="1 Hour - ₹800">1 Hour - ₹800</option>
+      </select>
+
+      <label for="timeslot">Preferred Time Slot</label>
+      <select id="timeslot" name="Preferred Time Slot" required>
+        <option value="">-- Select Duration First --</option>
+      </select>
+
+      <label for="name">Your Name (Alias Allowed)</label>
+      <input type="text" id="name" name="Name" placeholder="Enter your name" required>
+
+      <label for="whatsapp">WhatsApp Number (10 digits only)</label>
+      <input type="tel" id="whatsapp" name="WhatsApp Number" pattern="[0-9]{10}" maxlength="10"
+        placeholder="Enter 10-digit number" required>
+      <small>Enter your 10-digit WhatsApp number (without country code).</small>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="Email" placeholder="example@mail.com" required>
+
+      <label for="message">Describe Your Concern (Optional)</label>
+      <textarea id="message" name="Concern" rows="4" placeholder="Write a brief concern (optional)..."></textarea>
+
+      <button type="submit" class="btn">Submit & Proceed</button>
+    </form>
+
+    <div id="form-message"></div>
+
+    <div class="payment-section">
+      <p><strong>Complete Payment After Submission:</strong></p>
+      <a href="https://rzp.io/l/yourpaymentlink" class="btn" target="_blank">Pay Now ₹</a>
+    </div>
+
+    <p class="privacy-note">
+      🔒 Your privacy is our priority.<br>
+      All data is encrypted & consultations are fully confidential.
+    </p>
+  </div>
+
+  <footer>
+    © 2025 Otis Center. All rights reserved.
+  </footer>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwOwGzGkjxHdBRC6AmH4v5jE4iWHZlRna7uncR3_n8vSaLD0JMm3d8NwWW04_zIPSrgww/exec';
+    const form = document.getElementById('consultation-form');
+    const formMessage = document.getElementById('form-message');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      // Disable the submit button to prevent multiple clicks
+      submitButton.disabled = true;
+      submitButton.innerText = 'Submitting...';
+
+      const formData = new FormData(form);
+      const params = new URLSearchParams();
+
+      for (const pair of formData.entries()) {
+        params.append(pair[0], pair[1]);
+      }
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: params
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.result === 'success') {
+            formMessage.style.color = "#4CAF50";
+            formMessage.innerHTML = "✅ Your details have been submitted successfully!";
+            form.reset();
+
+            // Update button to show submitted
+            submitButton.innerText = 'Submitted!';
+          } else {
+            formMessage.style.color = "#FF5252";
+            formMessage.innerHTML = "❌ Submission failed. Please try again!";
+
+            // Re-enable button on failure
+            submitButton.disabled = false;
+            submitButton.innerText = 'Submit & Proceed';
+          }
+        })
+        .catch(error => {
+          formMessage.style.color = "#FF5252";
+          formMessage.innerHTML = "❌ There was an error! Please try again.";
+          console.error('Error!', error.message);
+
+          // Re-enable button on error
+          submitButton.disabled = false;
+          submitButton.innerText = 'Submit & Proceed';
+        });
+    });
+
+    function updateTimeSlots() {
+      const durationSelect = document.getElementById('duration');
+      const timeslotSelect = document.getElementById('timeslot');
+      const selectedDuration = durationSelect.value;
+
+      timeslotSelect.innerHTML = '';
+
+      let slots = [];
+
+      if (selectedDuration.includes('15 Minutes')) {
+        slots = generateTimeSlots(15);
+      } else if (selectedDuration.includes('30 Minutes')) {
+        slots = generateTimeSlots(30);
+      } else if (selectedDuration.includes('1 Hour')) {
+        slots = generateTimeSlots(60);
+      }
+
+      if (slots.length > 0) {
+        slots.forEach(function (slot) {
+          const option = document.createElement('option');
+          option.value = slot;
+          option.text = slot;
+          timeslotSelect.appendChild(option);
+        });
+      } else {
+        const option = document.createElement('option');
+        option.text = '-- Select Duration First --';
+        timeslotSelect.appendChild(option);
+      }
+    }
+
+    function generateTimeSlots(intervalMinutes) {
+      const startHour = 9;
+      const endHour = 20;
+      let slots = [];
+
+      for (let hour = startHour; hour < endHour; hour++) {
+        let minutes = 0;
+        while (minutes < 60) {
+          let startTime = formatTime(hour, minutes);
+          let endMinutes = minutes + intervalMinutes;
+          let endHourAdjusted = hour;
+
+          if (endMinutes >= 60) {
+            endMinutes = endMinutes % 60;
+            endHourAdjusted = hour + 1;
+          }
+
+          if (endHourAdjusted >= endHour && endMinutes > 0) break;
+
+          let endTime = formatTime(endHourAdjusted, endMinutes);
+          slots.push(`${startTime} - ${endTime}`);
+
+          minutes += intervalMinutes;
+        }
+      }
+      return slots;
+    }
+
+    function formatTime(hour, minute) {
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+      const minuteStr = minute < 10 ? '0' + minute : minute;
+      return `${hour12}:${minuteStr} ${ampm}`;
+    }
+  </script>
+
+</body>
+
+</html>
